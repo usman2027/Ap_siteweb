@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../css/Global.css" />
+    <title>COURS SIO WEB | Ligne de commande Linux</title>
+    <style>
+      :root {
+        --ink: #0f172a;
+        --muted: #000000;
+        --line: #cbd5e1;
+        --accent: #050505;
+        --accent-dark: #070707;
+        --accent-soft: #fbfefc;
+        --row-alt: #f8fafc;
+        --hover: #e0f2fe;
+      }
+
+      /* Conteneur : défilement vertical, en-tête fixe */
+      .table-wrapper {
+        max-height: 75vh;
+        overflow: auto;
+        margin: 16px 0 24px;
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+      }
+
+      table {
+        width: 100%;
+        min-width: 720px;
+        border-collapse: separate;
+        border-spacing: 0;
+      }
+
+      /* En-tête du tableau */
+      thead th {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        padding: 14px 16px;
+        text-align: left;
+        font-size: 0.95rem;
+        color: #faf8f8;
+        background: var(--ink);
+        border-right: 1px solid #030302;
+      }
+
+      td,
+      tbody th {
+        padding: 10px 16px;
+        text-align: left;
+        vertical-align: top;
+        border-right: 1px solid var(--line);
+        border-bottom: 1px solid var(--line);
+      }
+
+      td:last-child {
+        border-right: none;
+      }
+
+      /* Bandeau de catégorie */
+      .cat th {
+        padding: 12px 16px;
+        font-size: 1.05rem;
+        text-align: left;
+        color: var(--accent-dark);
+        background: var(--accent-soft);
+        border-left: 6px solid var(--accent);
+        border-bottom: 1px solid var(--line);
+      }
+
+      /* Séparation visible entre deux commandes */
+      tbody.cmd tr:first-child > * {
+        border-top: 2px solid #0d0d0d;
+      }
+
+      /* Colonne de la commande */
+      .cmd-name {
+        width: 170px;
+        font-family: "Consolas", "Courier New", monospace;
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: var(--ink);
+        background: #f1f5f9;
+        border-left: 6px solid #0a0a0a;
+      }
+
+      .cmd-name small {
+        display: block;
+        margin-top: 4px;
+        font-family: system-ui, sans-serif;
+        font-size: 0.8rem;
+        font-weight: normal;
+        color: var(--muted);
+      }
+
+      /* Lignes alternées et survol */
+      tbody.cmd tr:nth-child(even) > td {
+        background: var(--row-alt);
+      }
+
+      tbody.cmd tr:hover > td {
+        background: var(--hover);
+      }
+
+      /* Colonne des options */
+      .opt {
+        width: 150px;
+        white-space: nowrap;
+      }
+
+      .opt code {
+        padding: 3px 9px;
+        font-family: "Consolas", "Courier New", monospace;
+        font-weight: bold;
+        color: var(--accent-dark);
+        background: var(--accent-soft);
+        border: 1px solid #090909;
+        border-radius: 6px;
+      }
+
+      .none {
+        font-style: italic;
+        color: var(--muted);
+      }
+
+      /* Colonne des exemples : style terminal */
+      .ex code {
+        display: inline-block;
+        padding: 4px 10px;
+        font-family: "Consolas", "Courier New", monospace;
+        font-size: 0.92em;
+        color: #08b0fe;
+        background: var(--ink);
+        border-radius: 6px;
+      }
+
+      .ex code::before {
+        content: "$ ";
+        color: #070707;
+      }
+
+      .ex code.key::before {
+        content: none;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- En-tête de la page -->
+    <header>
+      <nav>
+        <div class="logo">Logo</div>
+        <div class="menu" id="menu">
+          <a href="../index.html">Accueil</a>
+          <a href="html.html">HTML</a>
+          <a href="css.html">CSS</a>
+          <a href="javascript.html">JavaScript</a>
+          <a href="php.html">PHP</a>
+          <a href="kotlin.html">Kotlin</a>
+          <a href="python.html">Python</a>
+          <a href="sql.html">SQL</a>
+          <a href="angular.html">Angular</a>
+          <a href="git.html">Git</a>
+          <a href="github.html">GitHub</a>
+          <a href="linux.html">Linux</a>
+          <a href="linux_command_line.html">Ligne de commande Linux</a>
+        </div>
+        <div
+          class="burger"
+          id="burger"
+          aria-label="Menu"
+          aria-expanded="false"
+          role="button"
+          tabindex="0"
+        >
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Contenu principal -->
+    <main>
+      <h1>Introduction à la Ligne de commande Linux</h1>
+      <p>
+        La ligne de commande Linux est une interface textuelle permettant de contrôler directement le système d'exploitation en tapant des instructions au clavier.
+        Contrairement à l'interface graphique (où l'on utilise une souris, des icônes et des fenêtres), la ligne de commande repose entièrement sur du texte.
+      </p>
+
+      <!-- Mémento des commandes Linux -->
+      <h2>Mémento : commandes Linux et leurs options</h2>
+
+      <div class="table-wrapper">
+        <table id="memo" aria-label="Mémento des commandes Linux et de leurs options">
+          <thead>
+            <tr>
+              <th scope="col">Commande</th>
+              <th scope="col">Option / argument</th>
+              <th scope="col">Description</th>
+              <th scope="col">Exemple</th>
+            </tr>
+          </thead>
+
+          <!-- ===== Navigation et affichage ===== -->
+          <tbody class="cat">
+            <tr><th colspan="4" scope="colgroup">Navigation et affichage</th></tr>
+          </tbody>
+
+          <tbody class="cmd">
+            <tr>
+              <th scope="rowgroup" rowspan="3" class="cmd-name">pwd<small>Afficher le répertoire courant</small></th>
+              <td class="opt"><span class="none">commande de base</span></td>
+              <td>Affiche le chemin complet du répertoire dans lequel on se trouve</td>
+              <td class="ex"><code>pwd</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-L</code></td>
+              <td>Affiche le chemin logique, avec les liens symboliques (comportement par défaut)</td>
+              <td class="ex"><code>pwd -L</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-P</code></td>
+              <td>Affiche le chemin physique, sans les liens symboliques</td>
+              <td class="ex"><code>pwd -P</code></td>
+            </tr>
+          </tbody>
+
+          <tbody class="cmd">
+            <tr>
+              <th scope="rowgroup" rowspan="6" class="cmd-name">ls<small>Lister le contenu d'un répertoire</small></th>
+              <td class="opt"><span class="none">commande de base</span></td>
+              <td>Liste les fichiers et répertoires du dossier courant</td>
+              <td class="ex"><code>ls</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-l</code></td>
+              <td>Format détaillé : droits, propriétaire, taille, date de modification</td>
+              <td class="ex"><code>ls -l</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-a</code></td>
+              <td>Affiche aussi les fichiers cachés (ceux dont le nom commence par un point)</td>
+              <td class="ex"><code>ls -a</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-h</code></td>
+              <td>Affiche les tailles dans une unité lisible (Ko, Mo, Go), à utiliser avec <code>-l</code></td>
+              <td class="ex"><code>ls -lh</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-R</code></td>
+              <td>Liste aussi le contenu des sous-répertoires (récursif)</td>
+              <td class="ex"><code>ls -R</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-lah</code></td>
+              <td>Combinaison très utilisée : détaillé, fichiers cachés et tailles lisibles</td>
+              <td class="ex"><code>ls -lah</code></td>
+            </tr>
+          </tbody>
+
+          <tbody class="cmd">
+            <tr>
+              <th scope="rowgroup" rowspan="5" class="cmd-name">cd<small>Changer de répertoire</small></th>
+              <td class="opt"><span class="none">commande de base</span></td>
+              <td>Sans argument : retourne dans le répertoire personnel (home)</td>
+              <td class="ex"><code>cd</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>chemin</code></td>
+              <td>Va dans le répertoire indiqué</td>
+              <td class="ex"><code>cd /var/log</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>..</code></td>
+              <td>Remonte au répertoire parent</td>
+              <td class="ex"><code>cd ..</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>~</code></td>
+              <td>Va dans le répertoire personnel de l'utilisateur</td>
+              <td class="ex"><code>cd ~</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-</code></td>
+              <td>Retourne au répertoire précédent</td>
+              <td class="ex"><code>cd -</code></td>
+            </tr>
+          </tbody>
+
+          <tbody class="cmd">
+            <tr>
+              <th scope="rowgroup" rowspan="1" class="cmd-name">clear<small>Effacer le terminal</small></th>
+              <td class="opt"><span class="none">commande de base</span></td>
+              <td>Efface le contenu affiché dans le terminal (équivalent au raccourci Ctrl + L)</td>
+              <td class="ex"><code>clear</code></td>
+            </tr>
+          </tbody>
+
+          <!-- ===== Gestion des fichiers et des répertoires ===== -->
+          <tbody class="cat">
+            <tr><th colspan="4" scope="colgroup">Gestion des fichiers et des répertoires</th></tr>
+          </tbody>
+
+          <tbody class="cmd">
+            <tr>
+              <th scope="rowgroup" rowspan="3" class="cmd-name">mkdir<small>Créer un répertoire</small></th>
+              <td class="opt"><span class="none">commande de base</span></td>
+              <td>Crée un nouveau répertoire</td>
+              <td class="ex"><code>mkdir projet</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-p</code></td>
+              <td>Crée aussi les répertoires parents qui n'existent pas encore</td>
+              <td class="ex"><code>mkdir -p cours/linux/tp1</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-v</code></td>
+              <td>Affiche un message pour chaque répertoire créé</td>
+              <td class="ex"><code>mkdir -v projet</code></td>
+            </tr>
+          </tbody>
+
+          <tbody class="cmd">
+            <tr>
+              <th scope="rowgroup" rowspan="3" class="cmd-name">touch<small>Créer un fichier vide</small></th>
+              <td class="opt"><span class="none">commande de base</span></td>
+              <td>Crée un fichier vide (ou met à jour sa date de modification s'il existe déjà)</td>
+              <td class="ex"><code>touch index.html</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-c</code></td>
+              <td>Ne crée pas le fichier s'il n'existe pas</td>
+              <td class="ex"><code>touch -c notes.txt</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-d</code></td>
+              <td>Fixe une date précise de modification</td>
+              <td class="ex"><code>touch -d "2026-10-08" notes.txt</code></td>
+            </tr>
+          </tbody>
+
+          <tbody class="cmd">
+            <tr>
+              <th scope="rowgroup" rowspan="5" class="cmd-name">cp<small>Copier</small></th>
+              <td class="opt"><span class="none">commande de base</span></td>
+              <td>Copie un fichier</td>
+              <td class="ex"><code>cp a.txt b.txt</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-r</code></td>
+              <td>Copie un répertoire et tout son contenu (récursif)</td>
+              <td class="ex"><code>cp -r dossier/ copie/</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-i</code></td>
+              <td>Demande confirmation avant d'écraser un fichier existant</td>
+              <td class="ex"><code>cp -i a.txt b.txt</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-v</code></td>
+              <td>Affiche chaque fichier copié</td>
+              <td class="ex"><code>cp -v a.txt b.txt</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-p</code></td>
+              <td>Conserve les droits, le propriétaire et les dates d'origine</td>
+              <td class="ex"><code>cp -p a.txt b.txt</code></td>
+            </tr>
+          </tbody>
+
+          <tbody class="cmd">
+            <tr>
+              <th scope="rowgroup" rowspan="4" class="cmd-name">mv<small>Déplacer ou renommer</small></th>
+              <td class="opt"><span class="none">commande de base</span></td>
+              <td>Déplace un fichier ou le renomme</td>
+              <td class="ex"><code>mv a.txt dossier/</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-i</code></td>
+              <td>Demande confirmation avant d'écraser un fichier existant</td>
+              <td class="ex"><code>mv -i a.txt b.txt</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-n</code></td>
+              <td>N'écrase jamais un fichier existant</td>
+              <td class="ex"><code>mv -n a.txt b.txt</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-v</code></td>
+              <td>Affiche chaque déplacement effectué</td>
+              <td class="ex"><code>mv -v a.txt dossier/</code></td>
+            </tr>
+          </tbody>
+
+          <tbody class="cmd">
+            <tr>
+              <th scope="rowgroup" rowspan="5" class="cmd-name">rm<small>Supprimer</small></th>
+              <td class="opt"><span class="none">commande de base</span></td>
+              <td>Supprime un fichier (définitif : sans corbeille)</td>
+              <td class="ex"><code>rm a.txt</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-i</code></td>
+              <td>Demande confirmation avant chaque suppression</td>
+              <td class="ex"><code>rm -i a.txt</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-f</code></td>
+              <td>Force la suppression sans confirmation ni avertissement</td>
+              <td class="ex"><code>rm -f a.txt</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-r</code></td>
+              <td>Supprime un répertoire et tout son contenu (récursif)</td>
+              <td class="ex"><code>rm -r dossier/</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-rf</code></td>
+              <td>Suppression forcée et récursive (à utiliser avec précaution)</td>
+              <td class="ex"><code>rm -rf dossier/</code></td>
+            </tr>
+          </tbody>
+
+          <tbody class="cmd">
+            <tr>
+              <th scope="rowgroup" rowspan="4" class="cmd-name">cat<small>Afficher un fichier</small></th>
+              <td class="opt"><span class="none">commande de base</span></td>
+              <td>Affiche l'intégralité du contenu d'un fichier</td>
+              <td class="ex"><code>cat a.txt</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-n</code></td>
+              <td>Numérote toutes les lignes affichées</td>
+              <td class="ex"><code>cat -n a.txt</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-b</code></td>
+              <td>Numérote uniquement les lignes non vides</td>
+              <td class="ex"><code>cat -b a.txt</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-s</code></td>
+              <td>Regroupe les lignes vides consécutives en une seule</td>
+              <td class="ex"><code>cat -s a.txt</code></td>
+            </tr>
+          </tbody>
+
+          <tbody class="cmd">
+            <tr>
+              <th scope="rowgroup" rowspan="3" class="cmd-name">head<small>Afficher le début</small></th>
+              <td class="opt"><span class="none">commande de base</span></td>
+              <td>Affiche les 10 premières lignes d'un fichier</td>
+              <td class="ex"><code>head log.txt</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-n N</code></td>
+              <td>Affiche les N premières lignes d'un fichier</td>
+              <td class="ex"><code>head -n 20 log.txt</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-c N</code></td>
+              <td>Affiche les N premiers octets d'un fichier</td>
+              <td class="ex"><code>head -c 100 log.txt</code></td>
+            </tr>
+          </tbody>
+
+          <tbody class="cmd">
+            <tr>
+              <th scope="rowgroup" rowspan="4" class="cmd-name">tail<small>Afficher la fin</small></th>
+              <td class="opt"><span class="none">commande de base</span></td>
+              <td>Affiche les 10 dernières lignes d'un fichier</td>
+              <td class="ex"><code>tail log.txt</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-n N</code></td>
+              <td>Affiche les N dernières lignes d'un fichier</td>
+              <td class="ex"><code>tail -n 50 log.txt</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-f</code></td>
+              <td>Suit l'évolution du fichier en temps réel (pratique pour les logs)</td>
+              <td class="ex"><code>tail -f /var/log/syslog</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-n +N</code></td>
+              <td>Affiche le contenu à partir de la ligne N jusqu'à la fin</td>
+              <td class="ex"><code>tail -n +15 log.txt</code></td>
+            </tr>
+          </tbody>
+
+          <tbody class="cmd">
+            <tr>
+              <th scope="rowgroup" rowspan="5" class="cmd-name">nano<small>Éditeur de texte</small></th>
+              <td class="opt"><span class="none">commande de base</span></td>
+              <td>Ouvre un fichier dans un éditeur simple en ligne de commande</td>
+              <td class="ex"><code>nano page.html</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-l</code></td>
+              <td>Affiche les numéros de ligne dans l'éditeur</td>
+              <td class="ex"><code>nano -l page.html</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>+N</code></td>
+              <td>Ouvre le fichier directement à la ligne N</td>
+              <td class="ex"><code>nano +12 page.html</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>Ctrl + O</code></td>
+              <td>Raccourci dans nano : enregistre le fichier</td>
+              <td class="ex"><code class="key">Ctrl + O puis Entrée</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>Ctrl + X</code></td>
+              <td>Raccourci dans nano : quitte l'éditeur</td>
+              <td class="ex"><code class="key">Ctrl + X</code></td>
+            </tr>
+          </tbody>
+
+          <!-- ===== Recherche ===== -->
+          <tbody class="cat">
+            <tr><th colspan="4" scope="colgroup">Recherche</th></tr>
+          </tbody>
+
+          <tbody class="cmd">
+            <tr>
+              <th scope="rowgroup" rowspan="5" class="cmd-name">grep<small>Chercher du texte</small></th>
+              <td class="opt"><span class="none">commande de base</span></td>
+              <td>Cherche un motif textuel dans un fichier et affiche les lignes</td>
+              <td class="ex"><code>grep "erreur" log.txt</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-i</code></td>
+              <td>Ignore la différence entre majuscules et minuscules</td>
+              <td class="ex"><code>grep -i "erreur" log.txt</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-n</code></td>
+              <td>Affiche le numéro des lignes correspondantes</td>
+              <td class="ex"><code>grep -n "erreur" log.txt</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-r</code></td>
+              <td>Recherche récursive dans tous les sous-dossiers</td>
+              <td class="ex"><code>grep -r "erreur" /var/log</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-v</code></td>
+              <td>Exclut le motif : affiche les lignes qui ne le contiennent pas</td>
+              <td class="ex"><code>grep -v "info" log.txt</code></td>
+            </tr>
+          </tbody>
+
+          <tbody class="cmd">
+            <tr>
+              <th scope="rowgroup" rowspan="5" class="cmd-name">find<small>Chercher des fichiers</small></th>
+              <td class="opt"><span class="none">commande de base</span></td>
+              <td>Recherche des fichiers et répertoires dans une arborescence</td>
+              <td class="ex"><code>find /home</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-name</code></td>
+              <td>Recherche par nom exact ou motif (sensible à la casse)</td>
+              <td class="ex"><code>find . -name "*.php"</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-iname</code></td>
+              <td>Recherche par nom sans tenir compte de la casse</td>
+              <td class="ex"><code>find . -iname "*.jpg"</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-type f / d</code></td>
+              <td>Filtre par type : <code>f</code> pour fichier, <code>d</code> pour dossier</td>
+              <td class="ex"><code>find . -type f</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-size</code></td>
+              <td>Filtre par taille (ex : <code>+10M</code> pour plus de 10 Mo)</td>
+              <td class="ex"><code>find . -size +10M</code></td>
+            </tr>
+          </tbody>
+
+          <!-- ===== Droits et administration ===== -->
+          <tbody class="cat">
+            <tr><th colspan="4" scope="colgroup">Droits et administration</th></tr>
+          </tbody>
+
+          <tbody class="cmd">
+            <tr>
+              <th scope="rowgroup" rowspan="4" class="cmd-name">chmod<small>Modifier les droits</small></th>
+              <td class="opt"><code>755</code></td>
+              <td>Lecture/Écriture/Exécution pour le propriétaire, Read/Exec pour les autres</td>
+              <td class="ex"><code>chmod 755 script.sh</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>644</code></td>
+              <td>Lecture/Écriture pour le propriétaire, Read pour les autres</td>
+              <td class="ex"><code>chmod 644 page.html</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>+x</code></td>
+              <td>Rend le fichier exécutable</td>
+              <td class="ex"><code>chmod +x script.sh</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-R</code></td>
+              <td>Applique les modifications de droits de façon récursive</td>
+              <td class="ex"><code>chmod -R 755 dossier/</code></td>
+            </tr>
+          </tbody>
+
+          <tbody class="cmd">
+            <tr>
+              <th scope="rowgroup" rowspan="3" class="cmd-name">chown<small>Changer le propriétaire</small></th>
+              <td class="opt"><code>user</code></td>
+              <td>Change le propriétaire d'un fichier ou dossier</td>
+              <td class="ex"><code>chown alice fichier.txt</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>user:group</code></td>
+              <td>Change à la fois le propriétaire et le groupe attribué</td>
+              <td class="ex"><code>chown alice:www-data site/</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-R</code></td>
+              <td>Applique le changement à tout le contenu du dossier (récursif)</td>
+              <td class="ex"><code>chown -R alice:alice /var/www</code></td>
+            </tr>
+          </tbody>
+
+          <tbody class="cmd">
+            <tr>
+              <th scope="rowgroup" rowspan="4" class="cmd-name">sudo<small>Exécuter en administrateur</small></th>
+              <td class="opt"><span class="none">commande de base</span></td>
+              <td>Lance une commande avec les privilèges Superutilisateur (root)</td>
+              <td class="ex"><code>sudo apt update</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-u user</code></td>
+              <td>Exécute la commande sous l'identité d'un autre utilisateur</td>
+              <td class="ex"><code>sudo -u www-data ls</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-i</code></td>
+              <td>Ouvre une session terminal en tant que root avec son environnement</td>
+              <td class="ex"><code>sudo -i</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-k</code></td>
+              <td>Réinitialise l'autorisation : demande le mot de passe au prochain sudo</td>
+              <td class="ex"><code>sudo -k</code></td>
+            </tr>
+          </tbody>
+
+          <!-- ===== Gestion des processus et système ===== -->
+          <tbody class="cat">
+            <tr><th colspan="4" scope="colgroup">Processus et ressources système</th></tr>
+          </tbody>
+
+          <tbody class="cmd">
+            <tr>
+              <th scope="rowgroup" rowspan="3" class="cmd-name">ps<small>Lister les processus</small></th>
+              <td class="opt"><span class="none">commande de base</span></td>
+              <td>Affiche les processus actifs associés à la session courante</td>
+              <td class="ex"><code>ps</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>aux</code></td>
+              <td>Affiche tous les processus du système avec des détails complets</td>
+              <td class="ex"><code>ps aux</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-ef</code></td>
+              <td>Affiche tous les processus au format standard Linux</td>
+              <td class="ex"><code>ps -ef</code></td>
+            </tr>
+          </tbody>
+
+          <tbody class="cmd">
+            <tr>
+              <th scope="rowgroup" rowspan="3" class="cmd-name">kill<small>Arrêter un processus</small></th>
+              <td class="opt"><code>PID</code></td>
+              <td>Envoie un signal d'arrêt propre au processus spécifié par son PID</td>
+              <td class="ex"><code>kill 1234</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-9 PID</code></td>
+              <td>Force l'arrêt immédiat du processus (signal SIGKILL)</td>
+              <td class="ex"><code>kill -9 1234</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-15 PID</code></td>
+              <td>Demande une fermeture normale (signal SIGTERM par défaut)</td>
+              <td class="ex"><code>kill -15 1234</code></td>
+            </tr>
+          </tbody>
+
+          <tbody class="cmd">
+            <tr>
+              <th scope="rowgroup" rowspan="2" class="cmd-name">df<small>Espace disque</small></th>
+              <td class="opt"><span class="none">commande de base</span></td>
+              <td>Affiche l'espace disque disponible sur les systèmes de fichiers</td>
+              <td class="ex"><code>df</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-h</code></td>
+              <td>Affiche les capacités dans un format lisible (Go, Mo)</td>
+              <td class="ex"><code>df -h</code></td>
+            </tr>
+          </tbody>
+
+          <tbody class="cmd">
+            <tr>
+              <th scope="rowgroup" rowspan="3" class="cmd-name">du<small>Taille des dossiers</small></th>
+              <td class="opt"><span class="none">commande de base</span></td>
+              <td>Estime l'espace disque occupé par les fichiers et dossiers</td>
+              <td class="ex"><code>du</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-sh</code></td>
+              <td>Affiche un résumé global de la taille en unité lisible</td>
+              <td class="ex"><code>du -sh dossier/</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-h --max-depth=1</code></td>
+              <td>Affiche la taille des sous-dossiers directs uniquement</td>
+              <td class="ex"><code>du -h --max-depth=1</code></td>
+            </tr>
+          </tbody>
+
+          <!-- ===== Réseau et archivage ===== -->
+          <tbody class="cat">
+            <tr><th colspan="4" scope="colgroup">Réseau et archivage</th></tr>
+          </tbody>
+
+          <tbody class="cmd">
+            <tr>
+              <th scope="rowgroup" rowspan="3" class="cmd-name">ping<small>Tester la connexion</small></th>
+              <td class="opt"><code>hôte</code></td>
+              <td>Envoie des paquets ICMP pour vérifier l'inaccessibilité d'un hôte</td>
+              <td class="ex"><code>ping google.com</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-c N</code></td>
+              <td>S'arrête automatiquement après l'envoi de N paquets</td>
+              <td class="ex"><code>ping -c 4 8.8.8.8</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-i N</code></td>
+              <td>Définit un intervalle de N secondes entre chaque paquet envoyé</td>
+              <td class="ex"><code>ping -i 2 192.168.1.1</code></td>
+            </tr>
+          </tbody>
+
+          <tbody class="cmd">
+            <tr>
+              <th scope="rowgroup" rowspan="3" class="cmd-name">tar<small>Archiver des fichiers</small></th>
+              <td class="opt"><code>-czvf</code></td>
+              <td>Crée une archive compressée au format <code>.tar.gz</code></td>
+              <td class="ex"><code>tar -czvf backup.tar.gz dossier/</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-xzvf</code></td>
+              <td>Extrait une archive <code>.tar.gz</code> dans le dossier courant</td>
+              <td class="ex"><code>tar -xzvf backup.tar.gz</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-tzvf</code></td>
+              <td>Lyste le contenu d'une archive sans l'extraire</td>
+              <td class="ex"><code>tar -tzvf backup.tar.gz</code></td>
+            </tr>
+          </tbody>
+
+          <!-- ===== Aide ===== -->
+          <tbody class="cat">
+            <tr><th colspan="4" scope="colgroup">Aide</th></tr>
+          </tbody>
+
+          <tbody class="cmd">
+            <tr>
+              <th scope="rowgroup" rowspan="4" class="cmd-name">man<small>Afficher la documentation</small></th>
+              <td class="opt"><span class="none">commande de base</span></td>
+              <td>Affiche la page de manuel officielle d'une commande</td>
+              <td class="ex"><code>man ls</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>-k mot</code></td>
+              <td>Recherche un mot-clé dans les titres et résumés des manuels</td>
+              <td class="ex"><code>man -k copy</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>/mot</code></td>
+              <td>Dans une page de manuel : lance la recherche d'un terme</td>
+              <td class="ex"><code class="key">/mot puis Entrée</code></td>
+            </tr>
+            <tr>
+              <td class="opt"><code>q</code></td>
+              <td>Dans une page de manuel : quitte la lecture</td>
+              <td class="ex"><code class="key">q</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </main>
+
+    <!-- Script unique pour la navigation mobile (menu burger) -->
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const burger = document.getElementById("burger");
+        const menu = document.getElementById("menu");
+        if (burger && menu) {
+          burger.addEventListener("click", () => {
+            menu.classList.toggle("active");
+            const expanded = burger.getAttribute("aria-expanded") === "true";
+            burger.setAttribute("aria-expanded", !expanded);
+          });
+        }
+      });
+    </script>
+  </body>
+</html>
